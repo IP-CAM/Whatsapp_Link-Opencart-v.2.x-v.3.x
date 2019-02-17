@@ -9,7 +9,11 @@ Adicionando arquivos ao repositório
 - As cores e demais ações do botão podem ser configurados vai css (cabe ao proprietário faze-lo)
 
 ## Notas da versão
-- O script atual foi modificado para receber vai *web.* em vez de api.
+- O script atual foi modificado para receber via *web.* em vez de *api*.
+
+## Scripts de envio
+- *Atual* -> https://web.whatsapp.com/send?phone=
+- *Antigo* -> https://api.whatsapp.com/send?phone=
 
 ![whatsapp1](https://user-images.githubusercontent.com/8571832/52914159-c0f74780-32a3-11e9-9fc7-243ec0a2135c.jpg)
 ![whatsapp2](https://user-images.githubusercontent.com/8571832/52914158-c0f74780-32a3-11e9-8867-04e30fb9d981.jpg)
