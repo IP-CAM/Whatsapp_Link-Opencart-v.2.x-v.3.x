@@ -16,7 +16,7 @@ Adicionando arquivos ao repositório
 - *Antigo* -> https://api.whatsapp.com/send?phone=
 
 ## Link no Marketplace do Opencart.com
-https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=33527&filter_license=0
+https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=33527
 
 ![whatsapp1](https://user-images.githubusercontent.com/8571832/52914159-c0f74780-32a3-11e9-9fc7-243ec0a2135c.jpg)
 ![whatsapp2](https://user-images.githubusercontent.com/8571832/52914158-c0f74780-32a3-11e9-8867-04e30fb9d981.jpg)
