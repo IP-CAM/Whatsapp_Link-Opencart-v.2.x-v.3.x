@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+	<name>Atendimento whatsapp</name>
+	<code>whatsapp</code>
+	<version>2.3</version>
+	<author>REDS</author>
+	<link>https://www.agenciaprai.com/</link>
+	
+	<file path="catalog/view/theme/*/template/common/header.tpl">
+		<operation error="skip">
+			<search><![CDATA[</head>]]></search>
+			<add position="before"><![CDATA[
+				<style type="text/css">
+				.whatsapp .wpp-num {display: block;font-size: 1.3em;font-weight: bold;background-color: rgb(58, 196, 149);border-radius: 2px;color: #fff;text-align: center;padding: 5px 15px;}
+				</style>
+			]]></add>
+		</operation>
+	</file>
+	
+	<file path="catalog/view/theme/*/template/common/header.tpl">
+		<operation>
+			<search><![CDATA[
+			<div id="top-links" class="nav pull-right">
+			]]></search>
+			<add position="before"><![CDATA[
+				<?php if ($config_whatsapp_tell) { ?>
+					<div class="whatsapp pull-left">
+						<a href="#" onclick="window.open('https://web.whatsapp.com/send?phone=<?php echo $config_whatsapp_tell; ?>','WhatsApp','width=600,height=400,left=100px,top=100px'); return false"><span class="wpp-num"><i class="fa fa-whatsapp"></i>&nbsp;<?php echo $config_whatsapp_name; ?></span></a>
+					</div>
+				<?php } ?>
+			]]></add>
+		</operation>
+	</file>
+	
+	<file path="catalog/controller/common/header.php">
+		<operation error="skip">
+			<search><![CDATA[
+				$data['home'] = $this->url->link('common/home');
+			]]></search>
+			<add position="after"><![CDATA[
+				$data['config_whatsapp_name'] = $this->config->get('config_whatsapp_name');
+				$data['config_whatsapp_tell'] = $this->config->get('config_whatsapp_tell');
+			]]></add>
+		</operation>
+	</file>
+	
+	<file path="admin/controller/setting/setting.php">
+		<operation error="skip">
+			<search><![CDATA[
+				$this->load->model('tool/image');
+			]]></search>
+			<add position="before"><![CDATA[
+				if (isset($this->request->post['config_whatsapp_name'])) {
+					$data['config_whatsapp_name'] = $this->request->post['config_whatsapp_name'];
+				} else {
+					$data['config_whatsapp_name'] = $this->config->get('config_whatsapp_name');
+				}
+				if (isset($this->request->post['config_whatsapp_tell'])) {
+					$data['config_whatsapp_tell'] = $this->request->post['config_whatsapp_tell'];
+				} else {
+					$data['config_whatsapp_tell'] = $this->config->get('config_whatsapp_tell');
+				}
+			]]></add>
+		</operation>
+	</file>
+	
+	<file path="admin/view/template/setting/setting.tpl">
+		<operation error="skip">
+			<search><![CDATA[
+				<li><a href="#tab-server" data-toggle="tab"><?php echo $tab_server; ?></a></li>
+			]]></search>
+			<add position="after"><![CDATA[
+				<li><a href="#tabWhastapp" data-toggle="tab">whatsapp</a></li>
+			]]></add>
+		</operation>
+		<operation error="skip">
+			<search><![CDATA[
+				<div class="tab-content">
+			]]></search>
+			<add position="after"><![CDATA[
+				<div class="tab-pane" id="tabWhastapp">
+					<div class="form-group">
+						<div class="col-sm-4 control-label" for="in-whatsapp-id">
+								<label control-label">Seu Numero whatsapp:</label>
+							<ul class="list-unstyled">
+								<li>Cód do Pais *Brasil: 55</li>
+								<li>Código de area: 11</li>
+								<li>Numero: 12345-1234</li>
+								<li>Ex: 5511123451234</li>
+								<li><span class="text-danger">Use apenas numeros para preenchimento*</span></li>
+							</ul>
+						</div>
+						<div class="col-sm-4">
+							<input class="form-control" id="in-whatsapp-id" type="text" name="config_whatsapp_tell" placeholder="5511123451234" value="<?php echo $config_whatsapp_tell; ?>" />
+						</div>
+						</div>
+					<div class="form-group">
+							<label class="col-sm-4 control-label" for="tl-whatsapp">Nome do Botão<br /><small>Informe o nome do botão Ex: Atendimento WhatsApp</small></label>
+						<div class="col-sm-6">
+							<input class="form-control" id="tl-whatsapp" type="text" name="config_whatsapp_name" placeholder="Atendimento WhatsApp" value="<?php echo $config_whatsapp_name; ?>" />
+						</div>
+					</div>
+				</div>
+			]]></add>
+		</operation>
+	</file>
+	
+</modification>
