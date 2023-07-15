@@ -1,4 +1,4 @@
-
+https://faq.whatsapp.com/iphone/how-to-link-to-whatsapp-from-a-different-app/?lang=pt_br
 =========================================================
 https://api.whatsapp.com/send?text=
 =========================================================

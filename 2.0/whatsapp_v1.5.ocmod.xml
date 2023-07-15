@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+	<name>Atendimento Whatsapp</name>
+	<code>reds_button_whatsapp</code>
+	<version>2.0</version>
+	<author>REDS</author>
+	<link>https://www.agenciaprai.com/</link>
+	
+	<file path="catalog/view/theme/*/template/common/header.twig">
+		<operation error="skip">
+			<search><![CDATA[</head>]]></search>
+			<add position="before"><![CDATA[
+<style type="text/css">
+{% if whatsapp_top %}
+.top-whatsapp {
+  color: #fff;
+	background: #075e54;
+  background: linear-gradient(191deg, #075e54 0%, #128c7e 28%, #25d366 100%);
+  border-radius: 10px;
+  padding: 3px 15px;
+}
+.top-whatsapp:hover {
+  color: #fff;
+  background: #075e54;
+  background: linear-gradient(180deg, #075e54 0%, #128c7e 28%, #25d366 100%);
+}
+{% endif %}
+{% if whatsapp_fixed %}
+.fixed-whatsapp {
+  position: fixed;
+  bottom: 10%;
+	z-index: 99;
+}
+.whatsapp-left {left: 25px;}
+.whatsapp-right {right: 25px;}
+.fixed-whatsapp.pulse {
+  background: rgb(7,94,84);
+	background: linear-gradient(191deg, rgba(7,94,84,1) 0%, rgba(18,140,126,1) 28%, rgba(37,211,102,1) 100%); 
+  color: #fff;
+  text-align: center;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  padding: 11px;
+  text-shadow: 0 0 5px #128c7e;
+  box-shadow: 0 0 1px #128c7e;
+	animation: pulse 2s infinite;
+	cursor: pointer;
+}
+.fixed-whatsapp:hover {
+  color: #fff;
+  background: #075e54;
+  background: linear-gradient(180deg, #075e54 0%, #128c7e 28%, #25d366 100%);
+}
+.fixed-whatsapp > i {
+  font-size: 3.2em;
+}
+.pulse:hover {
+  animation: none;
+}
+@-webkit-keyframes pulse {
+  0% {
+    -webkit-box-shadow: 0 0 0 0 #1eb670;
+  }
+  70% {
+    -webkit-box-shadow: 0 0 0 10px rgba(204,169,44, 0);
+  }
+  100% {
+    -webkit-box-shadow: 0 0 0 0 rgba(204,169,44, 0);
+  }
+}
+@keyframes pulse {
+  0% {
+    -moz-box-shadow: 0 0 0 0 #1eb670;
+    box-shadow: 0 0 0 0 #1eb670;
+  }
+  70% {
+    -moz-box-shadow: 0 0 0 10px rgba(204,169,44, 0);
+    box-shadow: 0 0 0 10px rgba(204,169,44, 0);
+  }
+  100% {
+    -moz-box-shadow: 0 0 0 0 rgba(204,169,44, 0);
+    box-shadow: 0 0 0 0 rgba(204,169,44, 0);
+  }
+}
+{% endif %}
+</style>
+			]]></add>
+		</operation>
+	</file>
+	
+	<file path="catalog/view/theme/*/template/common/header.twig">
+		<operation>
+			<search index="0"><![CDATA[
+			<div id="top-links"
+			]]></search>
+			<add position="before"><![CDATA[
+			{% if whatsapp_tell and whatsapp_top %}
+			<div class="pull-left">
+			<a class="top-whatsapp" rell="nofollow" target="_blank" href="https://api.whatsapp.com/send?phone={{ whatsapp_tell }}/?&text={{ whatsapp_message }}">
+			<i class="fa fa-whatsapp"></i>
+			{% if whatsapp_name %}<span>{{ whatsapp_name }}</span>{% endif %}
+			</a></div>{% endif %}
+			]]></add>
+		</operation>
+		<operation>
+			<search index="0"><![CDATA[
+			{{ menu }}
+			]]></search>
+			<add position="before"><![CDATA[
+			{% if whatsapp_tell and whatsapp_fixed %}
+			<a class="fixed-whatsapp whatsapp-{{ whatsapp_position }} pulse" rell="nofollow" target="_blank" href="https://api.whatsapp.com/send?phone={{ whatsapp_tell }}/?&text={{ whatsapp_message }}" data-toggle="tooltip" title="{% if whatsapp_name %}{{ whatsapp_name }}{% else %}Atendimento Whatsapp{% endif %}">
+				<i class="fa fa-whatsapp"></i>
+			</a>{% endif %}
+			]]></add>
+		</operation>
+		
+	</file>
+	<file path="catalog/controller/common/header.php">
+		<operation error="skip">
+			<search><![CDATA[
+			$data['home'] = $this->url->link('common/home');
+			]]></search>
+			<add position="after"><![CDATA[
+			// BTN WHATSAPP @REDS 14/07/2023
+			$data['whatsapp_name'] = $this->config->get('config_whatsapp_name');
+			$data['whatsapp_tell'] = $this->config->get('config_whatsapp_tell');
+			$data['whatsapp_message'] = $this->config->get('config_whatsapp_message');
+			
+			if ($this->config->get('config_whatsapp_top')) {
+				$data['whatsapp_top'] = $this->config->get('config_whatsapp_top');
+			} else {
+				$data['whatsapp_top'] = false;
+			}
+			
+			if ($this->config->get('config_whatsapp_fixed')) {
+				$data['whatsapp_fixed'] = $this->config->get('config_whatsapp_fixed');
+				$data['whatsapp_position'] = $this->config->get('config_whatsapp_position');
+			} else {
+				$data['whatsapp_fixed'] = false;
+			}
+			]]></add>
+		</operation>
+	</file>
+	
+	<file path="admin/controller/setting/setting.php">
+		<operation error="skip">
+			<search><![CDATA[
+				$this->load->model('tool/image');
+			]]></search>
+			<add position="before"><![CDATA[
+				if (isset($this->request->post['config_whatsapp_name'])) {
+					$data['config_whatsapp_name'] = $this->request->post['config_whatsapp_name'];
+				} else {
+					$data['config_whatsapp_name'] = $this->config->get('config_whatsapp_name');
+				}
+				
+				if (isset($this->request->post['config_whatsapp_tell'])) {
+					$data['config_whatsapp_tell'] = $this->request->post['config_whatsapp_tell'];
+				} else {
+					$data['config_whatsapp_tell'] = $this->config->get('config_whatsapp_tell');
+				}
+				
+				if (isset($this->request->post['config_whatsapp_message'])) {
+					$data['config_whatsapp_message'] = $this->request->post['config_whatsapp_message'];
+				} else {
+					$data['config_whatsapp_message'] = $this->config->get('config_whatsapp_message');
+				}
+				// header
+				if (isset($this->request->post['config_whatsapp_top'])) {
+					$data['config_whatsapp_top'] = $this->request->post['config_whatsapp_top'];
+				} else {
+					$data['config_whatsapp_top'] = $this->config->get('config_whatsapp_top');
+				}
+				// Fixed buttom
+				if (isset($this->request->post['config_whatsapp_fixed'])) {
+					$data['config_whatsapp_fixed'] = $this->request->post['config_whatsapp_fixed'];
+				} else {
+					$data['config_whatsapp_fixed'] = $this->config->get('config_whatsapp_fixed');
+				}
+				
+				if (isset($this->request->post['config_whatsapp_position'])) {
+					$data['config_whatsapp_position'] = $this->request->post['config_whatsapp_position'];
+				} else {
+					$data['config_whatsapp_position'] = $this->config->get('config_whatsapp_position');
+				}
+				
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/language/pt-br/setting/setting.php">
+		<operation error="skip">
+			<search>
+			<![CDATA[// Text]]>
+			</search>
+			<add position="before">
+			<![CDATA[
+			// whatsapp
+			$_['text_whatsapp_info']             = 'Seu Numero whatsapp:';
+			$_['text_whatsapp_country']          = 'Cód do Pais *Brasil: 55';
+			$_['text_whatsapp_area']             = 'Código de area: 11';
+			$_['text_whatsapp_phone']            = 'Numero: 12345-1234';
+			$_['button_whatsapp']                = 'Nome do Botão';
+			$_['text_whatsapp_message']          = 'Mensagem ao enviar';
+			$_['text_show_button_top']           = 'Exibir Botão no topo?';
+			$_['text_show_button_float']         = 'Exibir Botão flutuante?';
+			$_['text_position_button_float']     = 'Posição Botão';
+			$_['text_left']     								 = 'Esquerda';
+			$_['text_right']     							   = 'Direira';
+			$_['info_whatsapp_number']           = 'Use apenas numeros para preenchimento*(No exemplo: Código do pais + código de area + número do telefone): Ex: 5511123451234';
+			$_['info_button_whatsapp']           = '<b>Ex.:</b> Atendimento Whatsapp';
+			$_['info_message_send']              = '<b>Ex.:</b> Olá! Estava navegando no site da loja e preferi vir falar pelo WhatsApp! Pode me ajudar!';
+			$_['info_button_top']                = 'Informe se deseja exibir um botão fixo no top menu do site.';
+			$_['info_show_button_float']         = 'Informe se deseja exibir um botão flutuante no canto inferior direito.';
+			$_['info_position_button_float']     = 'Selecione se deseja exibir o botão do lado direito ou esquerdo no site.';
+			]]>
+			</add>
+		</operation>
+	</file>
+	<file path="admin/view/template/setting/setting.twig">
+		<operation error="skip">
+			<search>
+			<![CDATA[<li><a href="#tab-server" data-toggle="tab">{{ tab_server }}</a></li>]]>
+			</search>
+			<add position="after">
+			<![CDATA[<li><a href="#tab-whastapp" data-toggle="tab">WhatsApp</a></li>]]>
+			</add>
+		</operation>
+		<operation error="skip">
+			<search><![CDATA[
+				<div class="tab-content">
+			]]></search>
+			<add position="after"><![CDATA[
+				<div class="tab-pane" id="tab-whastapp">
+					<div class="form-group">
+						<div class="col-sm-4 control-label" for="in-whatsapp-id">
+								<label control-label">{{ text_whatsapp_info }}</label>
+							<ul class="list-unstyled">
+								<li>{{ text_whatsapp_country }}</li>
+								<li>{{ text_whatsapp_area }}</li>
+								<li>{{ text_whatsapp_phone }}</li>
+								<li><span class="text-danger">{{ info_whatsapp_number }}</span></li>
+							</ul>
+						</div>
+						<div class="col-sm-4">
+							<input class="form-control" id="in-whatsapp-id" type="text" name="config_whatsapp_tell" placeholder="" value="{{ config_whatsapp_tell }}" />
+						</div>
+						</div>
+					<div class="form-group">
+					    <div class="col-sm-4">
+						    <label class="control-label" for="tl-whatsapp">{{ button_whatsapp }}</label><br>
+						    <small>{{ info_button_whatsapp }}</small>
+						</div>
+						<div class="col-sm-6">
+							<input class="form-control" id="tl-whatsapp" type="text" name="config_whatsapp_name" placeholder="" value="{{ config_whatsapp_name }}" />
+						</div>
+					</div>
+					<div class="form-group">
+					    <div class="col-sm-4">
+						    <label class="control-label" for="tl-whatsapp">{{ text_whatsapp_message }}</label><br>
+						    <small>{{ info_message_send }}</small>
+						</div>
+						<div class="col-sm-6">
+							<input class="form-control" id="tl-whatsapp" type="text" name="config_whatsapp_message" placeholder="" value="{{ config_whatsapp_message }}" />
+						</div>
+					</div>
+					<div class="form-group">
+							<div class="col-sm-4">
+								<label class="control-label">{{ text_show_button_top }}</label><br>
+								<small>{{ info_button_top }}</small>
+							</div>
+							<div class="col-sm-6">
+								<label class="radio-inline"> {% if config_whatsapp_top %}
+									<input type="radio" name="config_whatsapp_top" value="1" checked="checked" /> {{ text_yes }}
+									{% else %}
+									<input type="radio" name="config_whatsapp_top" value="1" /> {{ text_yes }}
+									{% endif %} 
+								</label>
+								<label class="radio-inline"> {% if not config_whatsapp_top %}
+									<input type="radio" name="config_whatsapp_top" value="0" checked="checked" /> {{ text_no }}
+									{% else %}
+									<input type="radio" name="config_whatsapp_top" value="0" /> {{ text_no }}
+									{% endif %}
+								</label>
+							</div>
+						</div>
+    				<div class="form-group">
+							<div class="col-sm-4">
+								<label class="control-label">{{ text_show_button_float }}</label><br>
+								<small>{{ info_show_button_float }}</small>
+							</div>
+							<div class="col-sm-6">
+								<label class="radio-inline"> {% if config_whatsapp_fixed %}
+									<input type="radio" name="config_whatsapp_fixed" value="1" checked="checked" /> {{ text_yes }}
+									{% else %}
+									<input type="radio" name="config_whatsapp_fixed" value="1" /> {{ text_yes }}
+									{% endif %} 
+								</label>
+								<label class="radio-inline"> {% if not config_whatsapp_fixed %}
+									<input type="radio" name="config_whatsapp_fixed" value="0" checked="checked" /> {{ text_no }}
+									{% else %}
+									<input type="radio" name="config_whatsapp_fixed" value="0" /> {{ text_no }}
+									{% endif %}
+								</label>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-4">
+								<label class="control-label">{{ text_position_button_float }}</label><br>
+								<small>{{ info_position_button_float }}</small>
+							</div>
+							<div class="col-sm-6">
+								<label class="radio-inline"> {% if config_whatsapp_position %}
+									<input type="radio" name="config_whatsapp_position" value="left" checked="checked" /> {{ text_left }}
+									{% else %}
+									<input type="radio" name="config_whatsapp_position" value="left" /> {{ text_left }}
+									{% endif %} 
+								</label>
+								<label class="radio-inline"> {% if config_whatsapp_position %}
+									<input type="radio" name="config_whatsapp_position" value="right" checked="checked" /> {{ text_right }}
+									{% else %}
+									<input type="radio" name="config_whatsapp_position" value="right" /> {{ text_right }}
+									{% endif %} 
+								</label>
+							</div>
+						</div>
+						
+				</div>
+			]]></add>
+		</operation>
+	</file>
+	
+</modification>
